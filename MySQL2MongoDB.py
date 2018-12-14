@@ -10,22 +10,9 @@ can be installed by:
 pip install mysql-connector-python
 pip install pymongo
 
-Tables and data where created by this SQL commands:
-
-DROP TABLE IF EXISTS videos; 
-DROP TABLE IF EXISTS video_reviews; 
-create table videos ( id varchar(5) not null primary key, video_title varchar(100) not null, lenght int(5) not null, url varchar(50) not null ); 
-create table video_reviews ( user_name varchar(15) not null primary key, rating int (1), review varchar(30), id varchar(5) ); 
-insert into videos values (112, 'SQL for Beginners. Learn basics of SQL in 1 Hour', 57, 'https://www.youtube.com/watch?v=7Vtl2WggqOg'); 
-insert into videos values(113, 'Top 15 Advanced Excel 2016 Tips and Tricks', 22, 'https://www.youtube.com/watch?v=PU8ACyYxJBk'); 
-insert into videos values( 114, '10 Super Neat Ways to Clean Data in Excel', 1, 'https://www.youtube.com/watch?v=e0TfIbZXPeA'); 
-insert into video_reviews values ('emily_12', 4, 'very helpful!', 112); 
-insert into video_reviews values ('adva77', 5, 'great SQL video', 112); 
-insert into video_reviews values ('kim122', 3, 'basic tricks. not too helpful', 113); 
-insert into video_reviews values ('roni_v1', 4, 'helpul tips!', 113); 
-
 '''
 import mysql.connector
+from pymongo import MongoClient
 
 #change values below 
 USER = 'user'
@@ -36,6 +23,9 @@ DATABASE = 'videos'
 #connection string to your MySQL server, this is case where is used default port for MySQL
 cnx = mysql.connector.connect(host = HOST, password = PASSWORD, user= USER)
 cursor = cnx.cursor()
+
+# Connectio URI can be in shape mongodb://<username>:<password>@<ip>:<port>/<authenticationDatabase>')
+CONNECTION = MongoClient('mongodb://localhost')
 
 def get_data_from_table(table, database = DATABASE):
     '''
@@ -83,3 +73,20 @@ def get_dict_from_table(table, database = DATABASE):
             document[l] = table[i][j]
         result.append(document)
     return result
+
+def insert_into_mongodb(mysql_table, mysql_database, mongodb_collection, mongodb_database):
+    '''
+    get data from MySQL table and will store them in MongoDB 
+    
+    arguments:
+    
+    mysql_table: <string>, name of specific MySQL table
+    mysql_database: <string>, name of database where is table stored
+    mongodb_collection: <string>, name of MongoDB collection, it may be not existent
+    mongodb_database: <string>, name of MongoDB database, it may be not existent
+    '''
+    collection = get_dict_from_table(mysql_table, mysql_database)
+    db = CONNECTION[mongodb_database]
+    coll = db[mongodb_collection]
+    coll.insert_many(collection)
+    
