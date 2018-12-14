@@ -107,5 +107,9 @@ def insert_table_relative_to_collection(mysql_table, mysql_database, mongodb_col
     db = CONNECTION[mongodb_database]
     coll = db[mongodb_collection]
     for item in collection:
-        coll.update({relative_field: item.get(relative_field,0)}, {'$push': {mysql_table: item}})
+        rf = item[relative_field]
+        #this deletion is removing rebundancy of relative field in original document and in inserted array
+        #if you remove it and relative field will be in original document and also in inserted array
+        del item[relative_field] 
+        coll.update({relative_field: rf}, {'$push': {mysql_table: item}})
     
