@@ -90,3 +90,22 @@ def insert_into_mongodb(mysql_table, mysql_database, mongodb_collection, mongodb
     coll = db[mongodb_collection]
     coll.insert_many(collection)
     
+def insert_table_relative_to_collection(mysql_table, mysql_database, mongodb_collection, mongodb_database, relative_field):
+    '''
+    example: if you have two MySQL tables and you already migrate one table to mongodb collection and 
+    not yet migrated table is relative to already migrated table you can store data from non migrated table to MongoDB collection
+    as array of objects in documents
+    arguments:
+    
+    mysql_table: <string>, name of specific MySQL table
+    mysql_database: <string>, name of database where is table stored
+    mongodb_collection: <string>, name of MongoDB collection, it is already migrated table
+    mongodb_database: <string>, name of MongoDB database
+    relative_field: <string>, relative field is in MySQL column name and in MongoDB name of field
+    '''
+    collection = get_dict_from_table(mysql_table, mysql_database)
+    db = CONNECTION[mongodb_database]
+    coll = db[mongodb_collection]
+    for item in collection:
+        coll.update({relative_field: item.get(relative_field,0)}, {'$push': {mysql_table: item}})
+    
