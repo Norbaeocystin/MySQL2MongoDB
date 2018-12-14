@@ -43,7 +43,7 @@ def get_data_from_table(table, database = DATABASE):
 def get_columns_from_table(table, database = DATABASE):
     '''
     returns columns name from specific table,
-    with big tables is it better to use generator not fetchall data
+    with big tables it is better to use generator not fetchall data
     
     arguments:
     
