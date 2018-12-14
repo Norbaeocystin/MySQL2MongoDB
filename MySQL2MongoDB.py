@@ -1,7 +1,7 @@
 '''
 date: December 2018
 
-Short snippet of code to transfer data from 2 related tables in MySQL to MongoDB
+Short snippet of code to transfer data from MySQL tables to MongoDB
 
 dependencies: pymongo, mysql.connector
 
