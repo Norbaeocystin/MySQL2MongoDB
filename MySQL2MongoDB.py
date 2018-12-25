@@ -10,6 +10,10 @@ can be installed by:
 pip install mysql-connector-python
 pip install pymongo
 
+
+it is possible to change mysql.connector to cx_Oracle to migrate data from Oracle to Mongo, 
+Psycopg2 to migrate data from PostgresSQL to Mongo, of course it needs some tweaking ...
+
 '''
 import mysql.connector
 from pymongo import MongoClient
